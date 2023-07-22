@@ -1,0 +1,26 @@
+{
+  "name": "cyberdash_launcher",
+  "version": "1.0.0",
+  "description": "A Launcher for CyberDash Games",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Clartik/CyberDash_Launcher.git"
+  },
+  "author": "KarMah Inc.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Clartik/CyberDash_Launcher/issues"
+  },
+  "homepage": "https://github.com/Clartik/CyberDash_Launcher#readme",
+  "devDependencies": {
+    "electron": "^25.3.1"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.10",
+    "basic-ftp": "^5.0.3"
+  }
+}

@@ -1,0 +1,53 @@
+@font-face {
+    font-family: 'Flynn';
+    src: url('https://www.dafont.com/flynn.font');
+}
+
+body {
+    margin: 0px;
+}
+
+.background-image {
+    background-image: url('assets/img.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100vw;
+    height: 100vh;
+    text-align: center;
+    display: table-cell;
+    vertical-align: bottom;
+}
+
+#playButton {
+    padding: 3vh 2.5vw;
+    background-color: #3454e3;
+    color: white;
+    font-family: Flynn;
+    font-size: 2.5vw;
+    height: fit-content;
+    width: fit-content;
+    margin-bottom: 2.5vh;
+    border-radius: 1vw;
+    border: none;
+    display: inline-block;
+    min-width: 20%;
+}
+
+.animGrow {
+    transition: all .2s ease-in-out;
+}
+
+.animGrow:hover {
+    transform: scale(1.1)
+}
+
+#versionText {
+    position: absolute;
+    display: inline-block;
+    right: 1vw;
+    bottom: 1vw;
+    color: white;
+    font-family: Flynn;
+    font-size: 1.5vw;
+}
