@@ -15,19 +15,21 @@ sidebarArray[2].addEventListener('click', () => {
 function sidebarExpand(sidebarType) {
     if (sidebarType.classList.contains('viewport')) return;
 
-    sidebarType.classList.remove('sidebar');
-    sidebarType.classList.add('viewport');
-
     for (let element of sidebarArray) {
         if (element === sidebarType) continue;
 
         if (element.classList.contains('viewport')) {
+            element.getElementsByClassName('childDiv')[0].classList.add('hide');
+            element.getElementsByClassName('sidebar_label')[0].classList.remove('hide');
+
             element.classList.remove('viewport');
             element.classList.add('sidebar');
-
-            element.getElementsByClassName('sidebar_label')[0].classList.remove('hide');
         }
     }
 
+    sidebarType.getElementsByClassName('childDiv')[0].classList.remove('hide');
     sidebarType.getElementsByClassName('sidebar_label')[0].classList.add('hide');
+
+    sidebarType.classList.remove('sidebar');
+    sidebarType.classList.add('viewport');
 }
