@@ -17,7 +17,7 @@ const createWindow = () => {
         autoHideMenuBar: true
     });
 
-    mainWindow.loadFile("./pages/original.html");
+    mainWindow.loadFile("index.html");
 };
 
 app.whenReady().then(() => {

@@ -5,25 +5,21 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
 
     <link rel="stylesheet" type="text/css" href="index.css">
+    <script defer src="./renderer.js"></script>
 
     <title>CyberDash Launcher</title>
 </head>
 <body>
-    <div class="sidebarContainer">
-        <div class="sidebar" id="original">
-        </div>
-    
-        <div class="sidebar" id="twod">
-        </div>
-    
-        <div class="sidebar" id="newCalamities">
-        </div>
+    <div class="sidebar" id="original">
+        <label class="sidebar_label">CyberDash</label>
     </div>
 
-    <div class="viewport">
-
+    <div class="viewport" id="twod">
+        <label class="sidebar_label hide">CyberDash 2D</label>
     </div>
 
-    <script src="./renderer.js"></script>
+    <div class="sidebar" id="newCalamities">
+        <label class="sidebar_label">CyberDash: New Calamities</label>
+    </div>
 </body>
 </html>

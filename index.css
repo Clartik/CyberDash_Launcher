@@ -52,31 +52,49 @@ body {
     font-size: 1.5vw;
 }
 
-.sidebar {
-    background-size: cover;
+.viewport {
+    background-position: center;
     background-repeat: no-repeat;
-    display: block;
-    width: 5vw;
+    background-size: cover;
+    width: 90%;
     height: 100vh;
+    display: inline-block;
+    margin: 0px;
+    padding: 0px;
     float: left;
-    position: absolute;
-    /* border-left: 10px solid black; */
-    /* border-right: 10px solid black; */
 }
 
-#original {
+.viewport#original {
     background-image: url("assets/CyberDash1.png");
 }
 
-#twod {
+.viewport#twod {
     background-image: url("assets/CyberDash2D.png");
 }
 
-#newCalamities {
+.viewport#newCalamities {
     background-image: url("assets/CyberDashNewCalamities.png");
 }
 
-.viewport {
+.sidebar {
+    background-color: black;
+    width: 5%;
     height: 100vh;
+    display: inline-flex;
+    right: 0px;
     float: left;
+    text-align: center;
+    justify-content: center;
+}
+
+.sidebar_label {
+    color: white;
+    transform: rotate(180deg);
+    writing-mode: vertical-lr;
+    font-size: 3vw;
+    display: flexbox;
+}
+
+.hide {
+    visibility: hidden;
 }
