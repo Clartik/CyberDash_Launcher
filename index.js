@@ -1,11 +1,13 @@
-const { app, BrowserWindow, ipcMain} = require('electron');
+const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require('path');
-const child = require('child_process').execFile;
 
 const GameDownloader = require('./classes/gameDownloader');
+const FileSys = require('./classes/niceFileSystem')
+
+let mainWindow;
 
 const createWindow = () => {
-    const window = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         width: 960,
         height: 540,
         webPreferences: {
@@ -15,7 +17,7 @@ const createWindow = () => {
         autoHideMenuBar: true
     });
 
-    window.loadFile("index.html");
+    mainWindow.loadFile("./pages/original.html");
 };
 
 app.whenReady().then(() => {
@@ -23,15 +25,16 @@ app.whenReady().then(() => {
 });
 
 ipcMain.handle("get/latest_update", async (event, gameName) => {
-    const gameDownloader = new GameDownloader(gameName);
-    await gameDownloader.GetLatestGameVersion();
+    const gameDownloader = new GameDownloader(gameName, mainWindow.webContents);
+    return await gameDownloader.GetLatestGameVersion(ipcMain);
 });
 
 ipcMain.handle('get/game', (event, gameName) => {
     const gamePath = `bin/${gameName}/Build/Flashy Time CyberDash.exe`;
-    const exe = child(gamePath);
 
-    exe.on('close', (code) => {
-        app.exit();
-    });
+    if (!FileSys.CheckIfFileExists(gamePath)) return false;
+
+    shell.openExternal(path.join(__dirname, gamePath));
+
+    app.exit();
 });

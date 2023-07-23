@@ -8,7 +8,7 @@ body {
 }
 
 .background-image {
-    background-image: url('assets/img.png');
+    background-image: url('assets/CyberDash1.png');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -50,4 +50,33 @@ body {
     color: white;
     font-family: Flynn;
     font-size: 1.5vw;
+}
+
+.sidebar {
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: block;
+    width: 5vw;
+    height: 100vh;
+    float: left;
+    position: absolute;
+    /* border-left: 10px solid black; */
+    /* border-right: 10px solid black; */
+}
+
+#original {
+    background-image: url("assets/CyberDash1.png");
+}
+
+#twod {
+    background-image: url("assets/CyberDash2D.png");
+}
+
+#newCalamities {
+    background-image: url("assets/CyberDashNewCalamities.png");
+}
+
+.viewport {
+    height: 100vh;
+    float: left;
 }

@@ -42,29 +42,39 @@ const ftp_config = {
 };
 
 class GameDownloader {
-    constructor(gameName) {
+    constructor(gameName, webContents) {
         this.gameName = gameName;
         this.localVersionPath = `bin/${this.gameName}/Version.txt`;
-        this.remoteVersionPath = `bin/${this.gameName}/Version_Remote.txt`;
-        this.zipPath = `bin/${this.gameName}/Build.zip`
+        this.localVersionRemotePath = `bin/${this.gameName}/Version_Remote.txt`;
+        this.localZipPath = `bin/${this.gameName}/Build.zip`;
+        this.remoteZipPath = `files/${this.gameName}/Build.zip`;
+        this.remoteVersionPath = `files/${this.gameName}/Version.txt`;
+        this.webContents = webContents;
     }
 
     async GetLatestGameVersion() {
+        this.webContents.send('send/download_state', 'Checking For Updates');
+
         if (FileSys.CheckIfFileExists(this.localVersionPath)) {
             let localVersion = new Version(FileSys.ReadFileContents(this.localVersionPath));
     
             try {
                 let onlineVersion = await this.DownloadLatestVersion();
+
+                if (onlineVersion == null) {
+                    throw "Could Not Connect";
+                }
     
                 if (!localVersion.IsLatestVersion(onlineVersion)) {
                     await this.InstallGameFiles();
                 }
                 else {
-    
+                    this.webContents.send('send/download_state', 'Launch Game');
                 }
             } catch (error) {
                 console.log(error);
-                return;
+                this.webContents.send('send/download_state', 'Offline - Launch Game');
+                return true;
             }
         }
         else {
@@ -73,15 +83,14 @@ class GameDownloader {
     }
     
     async DownloadLatestVersion() {
-        const client = new ftp.Client();
-        client.ftp.verbose = true;
+        const client = new ftp.Client(3000);
         try {
             await client.access(ftp_config);
     
-            await client.downloadTo(this.remoteVersionPath, `files/${this.gameName}/Version.txt`);
-            var version = new Version(FileSys.ReadFileContents(this.remoteVersionPath));
+            await client.downloadTo(this.localVersionRemotePath, `files/${this.gameName}/Version.txt`);
+            var version = new Version(FileSys.ReadFileContents(this.localVersionRemotePath));
     
-            FileSys.DeleteFile(this.remoteVersionPath);
+            FileSys.DeleteFile(this.localVersionRemotePath);
         }
         catch(err) {
             console.log(err);
@@ -95,35 +104,48 @@ class GameDownloader {
     
     async InstallGameFiles() {
         // DOWNLOAD
-        const client = new ftp.Client();
+        const client = new ftp.Client(3000);
         
-        try {
-            console.log('Downloading Game Files...');
-    
+        try {    
             await client.access(ftp_config);
-    
+
+            this.webContents.send('send/download_state', 'Downloading Game');
+
+            const zipSize = await client.size(this.remoteZipPath);
+            const versionSize = await client.size(this.remoteVersionPath);
+
             client.trackProgress(info => {
-                console.log("Bytes Transferred Overall", FileSys.FormatBytes(info.bytesOverall));
+                this.webContents.send('send/download_state', `Downloading ${FileSys.FormatBytes(info.bytesOverall)}/${FileSys.FormatBytes(zipSize + versionSize)}`);
             })
     
-            await client.downloadTo(this.zipPath, `files/${this.gameName}/Build.zip`);
-            await client.downloadTo(this.localVersionPath, `files/${this.gameName}/Version.txt`);
-    
-            console.log('Game Files Downloaded!');
+            await client.downloadTo(this.localZipPath, this.remoteZipPath);
+            await client.downloadTo(this.localVersionPath,this.remoteVersionPath);
         }
         catch (err) {
             console.log(err);
+            client.close();
+            this.webContents.send('send/download_state', 'Offline - Failed To Check');
+            return false;
         }
     
         client.close();
     
         // INSTALL
-        console.log('Installing Game Files...');
+        this.webContents.send('send/download_state', 'Installing Game');
     
-        const zip = new AdmZip(this.zipPath);
-        await zip.extractAllToAsync(`bin/${this.gameName}/`, true);
+        const zip = new AdmZip(this.localZipPath);
+        await zip.extractAllToAsync(`bin/${this.gameName}/`, true, false, (error) => {
+            if (error) {
+                console.log(error);
+            }
+
+            console.log("Finished Unzipping");
+        });
     
-        FileSys.DeleteFile(this.zipPath);
+        FileSys.DeleteFile(this.localZipPath);
+
+        this.webContents.send('send/download_state', 'Launch Game');
+        return true;
     }
 }
 
