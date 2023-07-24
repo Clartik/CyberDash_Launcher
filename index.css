@@ -44,12 +44,9 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    width: 88%;
+    /* width: calc(90% - 8px); */
     height: 100vh;
-    display: flex;
-    position: relative;
-    float: left;
-    flex-shrink: 0;
+    flex-grow: 1;
 }
 
 .viewport#original {
@@ -69,11 +66,10 @@ body {
     width: 5%;
     height: 100vh;
     display: inline-flex;
-    border-left: transparent 2px solid;
-    border-right: transparent 2px solid;
+    border-left: black 2px solid;
+    border-right: black 2px solid;
     justify-content: center;
     align-items: flex-start;
-    float: left;
 }
 
 .sidebar_label {
@@ -102,5 +98,6 @@ body {
 }
 
 body {
-    display: flexbox;
+    display: flex;
+    flex-direction: row;
 }
