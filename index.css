@@ -44,32 +44,61 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    /* width: calc(90% - 8px); */
     height: 100vh;
     flex-grow: 1;
 }
 
-.viewport#original {
+/* .sidebar.open#original {
     background-image: url("assets/CyberDash1.png");
+
+    animation: fadeInBackground 0.5s forwards;
 }
 
-.viewport#twod {
+.sidebar.open#twod {
     background-image: url("assets/CyberDash2D.png");
+
+    animation: fadeInBackground 0.5s forwards;
 }
 
-.viewport#newCalamities {
+.sidebar.open#newCalamities {
     background-image: url("assets/CyberDashNewCalamities.png");
-}
+
+    animation: fadeInBackground 0.5s forwards;
+} */
 
 .sidebar {
     background-color: black;
     width: 5%;
     height: 100vh;
-    display: inline-flex;
     border-left: black 2px solid;
     border-right: black 2px solid;
+    display: inline-flex;
     justify-content: center;
     align-items: flex-start;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    transition: width 1s, background-color 1s, border 1s, flex-grow 1s;
+}
+
+.sidebar:hover {
+    border-left: red 2px solid;
+    border-right: red 2px solid;
+    transition: none;
+}
+
+.sidebar.open {
+    background-color: transparent;
+    width: 0%;
+    border: none;
+    flex-grow: 1;
+
+    transition: width 1s, background-color 1s, border 1s, flex-grow 1s;
+}
+
+.sidebar.open:hover {
+    border-left: none !important;
+    border-right: none !important;
 }
 
 .sidebar_label {
@@ -78,10 +107,14 @@ body {
     writing-mode: vertical-lr;
     font-size: 3vw;
     padding-bottom: 1vh;
+    opacity: 1;
+    transition: display 0s, opacity 1s;
 }
 
 .hide {
     display: none !important;
+    opacity: 0;
+    transition: display 0s 1s, opacity 1s;
 }
 
 .childDiv {
@@ -90,14 +123,27 @@ body {
     height: 100vh;
     justify-content: center;
     align-items: flex-end;
-}
-
-.sidebar:hover {
-    border-left: red 2px solid;
-    border-right: red 2px solid;
+    opacity: 1;
+    transition: display 0s, opacity 1s;
 }
 
 body {
     display: flex;
     flex-direction: row;
+}
+
+.animate-sidebarToViewport {
+    animation: sidebarToViewport 1s forwards ease;
+}
+
+.animate-viewportToSidebar {
+    animation: viewportToSidebar 1s forwards ease;
+}
+
+.animate-show {
+    animation: hide 0.5s reverse forwards;
+}
+
+.animate-hide {
+    animation: hide 0.5s;
 }

@@ -1,35 +1,54 @@
 const sidebarArray = [document.getElementById('original'), document.getElementById('twod'), document.getElementById('newCalamities')];
 
-sidebarArray[0].addEventListener('click', () => {
-    sidebarExpand(sidebarArray[0]);
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+sidebarArray[0].addEventListener('click', (e) => {
+    sidebarExpand(sidebarArray[0], e);
 });
 
-sidebarArray[1].addEventListener('click', () => {
-    sidebarExpand(sidebarArray[1]);
+sidebarArray[1].addEventListener('click', (e) => {
+    sidebarExpand(sidebarArray[1], e);
 });
 
-sidebarArray[2].addEventListener('click', () => {
-    sidebarExpand(sidebarArray[2]);
+sidebarArray[2].addEventListener('click', (e) => {
+    sidebarExpand(sidebarArray[2], e);
 });
 
-function sidebarExpand(sidebarType) {
-    if (sidebarType.classList.contains('viewport')) return;
+async function sidebarExpand(sidebarType, e) {
+    e.preventDefault();
+    if (sidebarType.classList.contains('open')) return;
 
     for (let element of sidebarArray) {
         if (element === sidebarType) continue;
+        if (!element.classList.contains('open')) continue;
 
-        if (element.classList.contains('viewport')) {
-            element.getElementsByClassName('childDiv')[0].classList.add('hide');
-            element.getElementsByClassName('sidebar_label')[0].classList.remove('hide');
+        let childDiv = element.getElementsByClassName('childDiv')[0];
+        let label = element.getElementsByClassName('sidebar_label')[0];
 
-            element.classList.remove('viewport');
-            element.classList.add('sidebar');
-        }
+        viewportToSidebar(element, label, childDiv);
     }
 
-    sidebarType.getElementsByClassName('childDiv')[0].classList.remove('hide');
-    sidebarType.getElementsByClassName('sidebar_label')[0].classList.add('hide');
+    let childDiv = sidebarType.getElementsByClassName('childDiv')[0];
+    let label = sidebarType.getElementsByClassName('sidebar_label')[0];
 
-    sidebarType.classList.remove('sidebar');
-    sidebarType.classList.add('viewport');
+    sidebarToViewport(sidebarType, label, childDiv);
+}
+
+async function sidebarToViewport(sidebarType, sidebarLabel, childDiv) {
+    sidebarType.classList.add('open');
+    sidebarLabel.classList.add('hide');
+
+    sidebarType.addEventListener('transitionend', function eventHandle() {
+        childDiv.classList.remove('hide');
+        console.log('a');
+        sidebarType.removeEventListener('transitionend', eventHandle);
+    });
+}
+
+async function viewportToSidebar(sidebarType, sidebarLabel, childDiv) {
+    sidebarType.classList.remove('open');
+    sidebarLabel.classList.remove('hide');
+    childDiv.classList.add('hide');
 }
