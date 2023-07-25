@@ -1,7 +1,7 @@
 const { app, BrowserWindow, ipcMain, shell, dialog } = require('electron');
 const path = require('path');
 
-const GameDownloader = require('./classes/gameDownloader');
+const GameDownloader = require('./classes/gameDownloaderSFTP');
 const FileSys = require('./classes/niceFileSystem')
 
 let mainWindow;
@@ -14,7 +14,8 @@ const createWindow = () => {
             preload: path.join(__dirname, "preload.js"),
             nodeIntegration: true,
         },
-        autoHideMenuBar: true
+        autoHideMenuBar: true,
+        icon: "./assets/CyberDash_Icon.png"
     });
 
     mainWindow.loadFile("index.html");

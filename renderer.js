@@ -28,7 +28,7 @@ async function sidebarExpand(sidebarType, e) {
         let options = {
             type: 'error',
             title: 'Trying to Switch?',
-            message: 'You Cannot Switch to Another Game While a Download is Under Progress!',
+            message: 'You Cannot Switch to Another Game While a Download May Be Under Progress!',
             buttons: [
                 'Ok'
             ],

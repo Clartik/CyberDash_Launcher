@@ -1,5 +1,6 @@
 const AdmZip = require('adm-zip');
-const ftp = require("basic-ftp");
+const SFTP = require("ssh2-sftp-client");
+const ip = require('ip');
 
 const FileSys = require('./niceFileSystem');
 
@@ -33,13 +34,22 @@ class Version {
     }
 }
 
-const ftp_config = {
+const sftp_local_config = {
     host: '192.168.1.156',
-    port: '21',
+    port: '22',
     user: 'clartik',
-    password: '4509',
-    secure: false
+    password: '4509'
 };
+
+const sftp_remote_config = {
+    host: '75.83.86.250',
+    port: '22',
+    user: 'clartik',
+    password: '4509'
+};
+
+let localNetworkStart = '192.168.1.1';
+let localNetworkEnd = '192.168.1.254';
 
 class GameDownloader {
     constructor(gameInfo, webContents) {
@@ -48,10 +58,16 @@ class GameDownloader {
         this.localVersionPath = `bin/${this.gameDir}/Version.txt`;
         this.localVersionRemotePath = `bin/${this.gameDir}/Version_Remote.txt`;
         this.localZipPath = `bin/${this.gameDir}/Build.zip`;
-        this.remoteZipPath = `files/${this.gameDir}/Build.zip`;
-        this.remoteVersionPath = `files/${this.gameDir}/Version.txt`;
+        this.remoteZipPath = `FTP/files/${this.gameDir}/Build.zip`;
+        this.remoteVersionPath = `FTP/files/${this.gameDir}/Version.txt`;
         this.gamePath = `bin/${this.gameDir}/Build/${this.gameFile}`;
         this.webContents = webContents;
+        this.client = new SFTP();
+
+        let serverIp = ip.address();
+        const isLocalNetwork = ip.cidrSubnet(`${localNetworkStart}/24`).contains(serverIp);
+
+        this.config = isLocalNetwork ? sftp_local_config : sftp_remote_config;
     }
 
     async GetLatestGameVersion() {
@@ -90,52 +106,57 @@ class GameDownloader {
     }
     
     async DownloadLatestVersion() {
-        const client = new ftp.Client(3000);
         try {
-            await client.access(ftp_config);
+            await this.client.connect(this.config);
     
-            await client.downloadTo(this.localVersionRemotePath, `files/${this.gameDir}/Version.txt`);
+            await this.client.get(this.remoteVersionPath, this.localVersionRemotePath);
             var version = new Version(FileSys.ReadFileContents(this.localVersionRemotePath));
     
             FileSys.DeleteFile(this.localVersionRemotePath);
         }
         catch(err) {
             console.log(err);
-            client.close();
+            this.client.end();
             return null;
         }
-        client.close();
+        this.client.end();
     
         return version;
     }
     
     async InstallGameFiles() {
         // DOWNLOAD
-        const client = new ftp.Client(3000);
         
         try {    
-            await client.access(ftp_config);
+            await this.client.connect(this.config);
 
             this.webContents.send('send/download_state', 'Downloading Game');
 
-            const zipSize = await client.size(this.remoteZipPath);
-            const versionSize = await client.size(this.remoteVersionPath);
+            let zipSize = await this.client.stat(this.remoteZipPath);
+            let versionSize = await this.client.stat(this.remoteVersionPath);
 
-            client.trackProgress(info => {
-                this.webContents.send('send/download_state', `Downloading ${FileSys.FormatBytes(info.bytesOverall)}/${FileSys.FormatBytes(zipSize + versionSize)}`);
-            })
+            zipSize = zipSize.size;
+            versionSize = versionSize.size;
     
-            await client.downloadTo(this.localZipPath, this.remoteZipPath);
-            await client.downloadTo(this.localVersionPath,this.remoteVersionPath);
+            const webContents = this.webContents;
+            await this.client.fastGet(this.remoteZipPath, this.localZipPath, {step: function(total_transferred, chunk, total) {
+                try {
+                    webContents.send('send/download_state', `Downloading ${FileSys.FormatBytes(total_transferred)}/${FileSys.FormatBytes(zipSize + versionSize)}`);
+                }
+                catch {
+                    return;
+                }
+            }});
+            await this.client.fastGet(this.remoteVersionPath, this.localVersionPath);
         }
         catch (err) {
             console.log(err);
-            client.close();
-            this.webContents.send('send/download_state', 'Offline - Failed To Check');
+            this.client.end();
+            this.webContents.send('send/download_state', 'Download Failed');
             return false;
         }
     
-        client.close();
+        this.client.end();
     
         // INSTALL
         this.webContents.send('send/download_state', 'Installing Game');
@@ -144,6 +165,8 @@ class GameDownloader {
         await zip.extractAllToAsync(`bin/${this.gameDir}/`, true, false, (error) => {
             if (error) {
                 console.log(error);
+                this.webContents.send('send/download_state', 'Failed To Install');
+                return false;
             }
         });
     

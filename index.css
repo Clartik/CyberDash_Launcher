@@ -1,6 +1,16 @@
  @font-face {
     font-family: 'Flynn';
-    src: url('https://www.dafont.com/flynn.font');
+    src: url('assets/fonts/Flynn\ Bold.otf');
+}
+
+@font-face {
+    font-family: 'Futured';
+    src: url('assets/fonts/Futured.TTF');
+}
+
+@font-face {
+    font-family: 'Pixel';
+    src: url('assets/fonts/DePixelBreit.ttf');
 }
 
 body {
@@ -11,8 +21,6 @@ body {
     padding: 3vh 2.5vw;
     background-color: #3454e3;
     color: white;
-    font-family: Flynn;
-    font-size: 2.5vw;
     height: fit-content;
     width: fit-content;
     border-radius: 1vw;
@@ -20,6 +28,22 @@ body {
     min-width: 20%;
     bottom: 2.5vh;
     position: relative;
+}
+
+.playButton#original {
+    font-family: Flynn;
+    -webkit-text-stroke: 0.05em black;
+    font-size: 2.5vw;
+}
+
+.playButton#twod {
+    font-family: Pixel;
+    font-size: 2vw;
+}
+
+.playButton#newCalamities {
+    font-family: Futured;
+    font-size: 3vw;
 }
 
 .animGrow {
@@ -49,19 +73,19 @@ body {
 }
 
 .sidebar.open#original {
-    background-image: url("assets/CyberDash1.png");
+    background-image: url("assets/images/CyberDash1.png");
 
     animation: fadeInBackground 0.5s forwards;
 }
 
 .sidebar.open#twod {
-    background-image: url("assets/CyberDash2D.png");
+    background-image: url("assets/images/CyberDash2D.png");
 
     animation: fadeInBackground 0.5s forwards;
 }
 
 .sidebar.open#newCalamities {
-    background-image: url("assets/CyberDashNewCalamities.png");
+    background-image: url("assets/images/CyberDashNewCalamities.png");
 
     animation: fadeInBackground 0.5s forwards;
 }
