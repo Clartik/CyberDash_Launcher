@@ -7,7 +7,7 @@ body {
     margin: 0px;
 }
 
-#playButton {
+.playButton {
     padding: 3vh 2.5vw;
     background-color: #3454e3;
     color: white;
@@ -48,7 +48,7 @@ body {
     flex-grow: 1;
 }
 
-/* .sidebar.open#original {
+.sidebar.open#original {
     background-image: url("assets/CyberDash1.png");
 
     animation: fadeInBackground 0.5s forwards;
@@ -64,7 +64,7 @@ body {
     background-image: url("assets/CyberDashNewCalamities.png");
 
     animation: fadeInBackground 0.5s forwards;
-} */
+}
 
 .sidebar {
     background-color: black;
@@ -108,13 +108,14 @@ body {
     font-size: 3vw;
     padding-bottom: 1vh;
     opacity: 1;
-    transition: display 0s, opacity 1s;
+    transition: all 1s;
 }
 
 .hide {
     display: none !important;
     opacity: 0;
-    transition: display 0s 1s, opacity 1s;
+    pointer-events: none;
+    transition: all 1s;
 }
 
 .childDiv {
@@ -124,7 +125,7 @@ body {
     justify-content: center;
     align-items: flex-end;
     opacity: 1;
-    transition: display 0s, opacity 1s;
+    transition: all 1s;
 }
 
 body {
