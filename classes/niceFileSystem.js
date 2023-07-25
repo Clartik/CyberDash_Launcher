@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 
 const byte_units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
 
@@ -23,7 +24,19 @@ class FileSystem {
         }
         
         return(n.toFixed(n < 10 && l > 0 ? 1 : 0) + ' ' + byte_units[l]);
-      }
+    }
+
+    static RemoveFilesInDir(dir) {
+        fs.readdir(dir, (err, files) => {
+            if (err) throw err;
+
+            for (let file of files) {
+                this.DeleteFile(path.join(dir, file), (err) => {
+                    if (err) throw err;
+                })
+            }
+        })
+    }
 }
 
 module.exports = FileSystem;

@@ -20,9 +20,24 @@ sidebarArray[2].addEventListener('click', (e) => {
 });
 
 async function sidebarExpand(sidebarType, e) {
-    if (sidebarAnimating) return;
     e.preventDefault();
+    if (sidebarAnimating) return;
     if (sidebarType.classList.contains('open')) return;
+
+    if (checkingForUpdates) {
+        let options = {
+            type: 'error',
+            title: 'Trying to Switch?',
+            message: 'You Cannot Switch to Another Game While a Download is Under Progress!',
+            buttons: [
+                'Ok'
+            ],
+            cancelId: 2
+        };
+
+        await window.api.OpenMessageDialog(options);
+        return;
+    }
 
     sidebarAnimating = true;
 
@@ -49,8 +64,8 @@ async function sidebarToViewport(sidebarType, sidebarLabel, childDiv) {
     sidebarType.addEventListener('transitionend', async function eventHandle() {
         childDiv.classList.remove('hide');
         sidebarAnimating = false;
-        await CheckForUpdates(sidebarType);
         sidebarType.removeEventListener('transitionend', eventHandle);
+        await CheckForUpdates(sidebarType);
     });
 }
 
@@ -64,11 +79,11 @@ const playButtons = document.getElementsByClassName('playButton');
 
 for (let button of playButtons) {
     button.addEventListener('click', async () => {
-        let gameName = getGameNameFromSidebarID(button.parentElement.parentElement);
+        let gameInfo = getGameNameFromSidebarID(button.parentElement.parentElement);
 
-        if (gameName === null) return;
+        if (gameInfo === null) return;
 
-        let success = await window.api.LaunchGame(gameName);
+        let success = await window.api.LaunchGame(gameInfo);
 
         if (!success) {
             CheckForUpdates(button.parentElement.parentElement);
@@ -77,15 +92,17 @@ for (let button of playButtons) {
 }
 
 async function CheckForUpdates(sidebarType) {
+    checkingForUpdates = true;
     setPlayButton(false);
     
-    let cyberDashVer = getGameNameFromSidebarID(sidebarType);
+    let gameInfo = getGameNameFromSidebarID(sidebarType);
 
-    if (cyberDashVer === null) return;
+    if (gameInfo === null) return;
 
-    let success = await window.api.CheckForUpdates(cyberDashVer);
+    let success = await window.api.CheckForUpdates(gameInfo);
 
     setPlayButton(true);
+    checkingForUpdates = false;
 }
 
 document.addEventListener('DOMContentLoaded', async() => {
@@ -155,11 +172,19 @@ window.api.OnGetDownloadState((event, message) => {
 function getGameNameFromSidebarID(sidebarType) {
     switch (sidebarType.id) {
         case 'original':
-            return 'CyberDash2D';
+            return {
+                'dir': 'CyberDash2D',
+                'filename': '.exe'
+            }
         case 'twod':
-            return 'CyberDash1';
+            return {
+                'dir': 'CyberDash1', 
+                'filename': 'Flashy Time CyberDash.exe'};
         case 'newCalamities':
-            return 'CyberDashNC';
+            return {
+                'dir': 'CyberDashNC',
+                'filename': '.exe'
+            }
         default:
             return null;
     }

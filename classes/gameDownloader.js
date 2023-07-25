@@ -42,13 +42,15 @@ const ftp_config = {
 };
 
 class GameDownloader {
-    constructor(gameName, webContents) {
-        this.gameName = gameName;
-        this.localVersionPath = `bin/${this.gameName}/Version.txt`;
-        this.localVersionRemotePath = `bin/${this.gameName}/Version_Remote.txt`;
-        this.localZipPath = `bin/${this.gameName}/Build.zip`;
-        this.remoteZipPath = `files/${this.gameName}/Build.zip`;
-        this.remoteVersionPath = `files/${this.gameName}/Version.txt`;
+    constructor(gameInfo, webContents) {
+        this.gameDir = gameInfo['dir'];
+        this.gameFile = gameInfo['filename'];
+        this.localVersionPath = `bin/${this.gameDir}/Version.txt`;
+        this.localVersionRemotePath = `bin/${this.gameDir}/Version_Remote.txt`;
+        this.localZipPath = `bin/${this.gameDir}/Build.zip`;
+        this.remoteZipPath = `files/${this.gameDir}/Build.zip`;
+        this.remoteVersionPath = `files/${this.gameDir}/Version.txt`;
+        this.gamePath = `bin/${this.gameDir}/Build/${this.gameFile}`;
         this.webContents = webContents;
     }
 
@@ -66,9 +68,14 @@ class GameDownloader {
                 }
     
                 if (!localVersion.IsLatestVersion(onlineVersion)) {
-                    await this.InstallGameFiles();
+                    this.installGames = await this.InstallGameFiles();
                 }
                 else {
+                    if (!FileSys.CheckIfFileExists(this.gamePath)) {
+                        FileSys.RemoveFilesInDir(`bin/${this.gameDir}`)
+                        return;
+                    }
+
                     this.webContents.send('send/download_state', 'Launch Game');
                 }
             } catch (error) {
@@ -78,7 +85,7 @@ class GameDownloader {
             }
         }
         else {
-            await this.InstallGameFiles();
+            this.installGames = await this.InstallGameFiles();
         }
     }
     
@@ -87,7 +94,7 @@ class GameDownloader {
         try {
             await client.access(ftp_config);
     
-            await client.downloadTo(this.localVersionRemotePath, `files/${this.gameName}/Version.txt`);
+            await client.downloadTo(this.localVersionRemotePath, `files/${this.gameDir}/Version.txt`);
             var version = new Version(FileSys.ReadFileContents(this.localVersionRemotePath));
     
             FileSys.DeleteFile(this.localVersionRemotePath);
@@ -134,7 +141,7 @@ class GameDownloader {
         this.webContents.send('send/download_state', 'Installing Game');
     
         const zip = new AdmZip(this.localZipPath);
-        await zip.extractAllToAsync(`bin/${this.gameName}/`, true, false, (error) => {
+        await zip.extractAllToAsync(`bin/${this.gameDir}/`, true, false, (error) => {
             if (error) {
                 console.log(error);
             }
