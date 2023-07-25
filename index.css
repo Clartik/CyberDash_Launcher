@@ -4,8 +4,8 @@
 }
 
 @font-face {
-    font-family: 'Futured';
-    src: url('assets/fonts/Futured.TTF');
+    font-family: 'Cyberfall';
+    src: url('assets/fonts/Cyberfall.otf');
 }
 
 @font-face {
@@ -42,8 +42,10 @@ body {
 }
 
 .playButton#newCalamities {
-    font-family: Futured;
+    font-family: Cyberfall;
     font-size: 3vw;
+    -webkit-text-stroke: 0.05em black;
+    background-color: transparent;
 }
 
 .animGrow {
