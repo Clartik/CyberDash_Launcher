@@ -1,10 +1,13 @@
 {
   "name": "cyberdash_launcher",
-  "version": "1.0.0",
+  "productName": "CyberDash Launcher",
+  "version": "0.1.0",
   "description": "A Launcher for CyberDash Games",
   "main": "index.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "repository": {
     "type": "git",

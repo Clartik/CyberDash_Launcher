@@ -43,7 +43,7 @@ body {
 
 .playButton#newCalamities {
     font-family: Cyberfall;
-    font-size: 3vw;
+    font-size: 3.5vw;
     -webkit-text-stroke: 0.05em black;
     background-color: transparent;
 }
@@ -157,20 +157,4 @@ body {
 body {
     display: flex;
     flex-direction: row;
-}
-
-.animate-sidebarToViewport {
-    animation: sidebarToViewport 1s forwards ease;
-}
-
-.animate-viewportToSidebar {
-    animation: viewportToSidebar 1s forwards ease;
-}
-
-.animate-show {
-    animation: hide 0.5s reverse forwards;
-}
-
-.animate-hide {
-    animation: hide 0.5s;
 }

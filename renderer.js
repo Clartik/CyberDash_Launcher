@@ -173,13 +173,14 @@ function getGameNameFromSidebarID(sidebarType) {
     switch (sidebarType.id) {
         case 'original':
             return {
-                'dir': 'CyberDash2D',
-                'filename': '.exe'
-            }
+                'dir': 'CyberDash1', 
+                'filename': 'Flashy Time CyberDash.exe'
+            };
         case 'twod':
             return {
-                'dir': 'CyberDash1', 
-                'filename': 'Flashy Time CyberDash.exe'};
+                'dir': 'CyberDash2D',
+                'filename': 'CyberDash2D.exe'
+            };
         case 'newCalamities':
             return {
                 'dir': 'CyberDashNC',

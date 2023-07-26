@@ -15,7 +15,7 @@ const createWindow = () => {
             nodeIntegration: true,
         },
         autoHideMenuBar: true,
-        icon: "./assets/CyberDash_Icon.png"
+        icon: "./assets/images/CyberDash.ico"
     });
 
     mainWindow.loadFile("index.html");

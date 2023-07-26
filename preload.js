@@ -9,7 +9,3 @@ const WINDOW_API = {
 
 // window.api
 contextBridge.exposeInMainWorld("api", WINDOW_API);
-
-window.myElectronApp = {
-    mainWindowWebContents: require('electron').remote.getCurrentWindow().webContents
-}
