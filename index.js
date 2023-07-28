@@ -18,6 +18,10 @@ const createWindow = () => {
         icon: "./assets/images/CyberDash.ico"
     });
 
+    FileSys.CreateDirIfNeed('bin');
+    FileSys.CreateDirIfNeed('bin/CyberDash1');
+    FileSys.CreateDirIfNeed('bin/CyberDash2D');
+    FileSys.CreateDirIfNeed('bin/CyberDashNC');
     mainWindow.loadFile("index.html");
 };
 

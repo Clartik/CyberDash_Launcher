@@ -38,14 +38,18 @@ const sftp_local_config = {
     host: '192.168.1.156',
     port: '22',
     user: 'clartik',
-    password: '4509'
+    password: '4509',
+    readyTimeout: 10000,
+    retries: 0,
 };
 
 const sftp_remote_config = {
     host: '75.83.86.250',
     port: '22',
     user: 'clartik',
-    password: '4509'
+    password: '4509',
+    readyTimeout: 10000,
+    retries: 0,
 };
 
 let localNetworkStart = '192.168.1.1';

@@ -11,6 +11,12 @@ class FileSystem {
     static CheckIfFileExists(filepath) {
         return fs.existsSync(filepath);
     }
+
+    static CreateDirIfNeed(dirPath) {
+        if (!this.CheckIfFileExists(dirPath)) {
+            fs.mkdirSync(dirPath);
+        }
+    }
     
     static DeleteFile(filepath) {
         fs.unlinkSync(filepath);
