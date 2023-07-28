@@ -1,10 +1,14 @@
-const { app, BrowserWindow, ipcMain, shell, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, shell, dialog, Menu, Tray, Notification } = require('electron');
 const path = require('path');
 
 const GameDownloader = require('./classes/gameDownloaderSFTP');
 const FileSys = require('./classes/niceFileSystem')
 
 let mainWindow;
+
+app.setLoginItemSettings({
+    openAtLogin: true
+})
 
 const createWindow = () => {
     mainWindow = new BrowserWindow({
@@ -15,18 +19,44 @@ const createWindow = () => {
             nodeIntegration: true,
         },
         autoHideMenuBar: true,
-        icon: "./assets/images/CyberDash.ico"
+        icon: "./assets/CyberDash.ico"
     });
 
     FileSys.CreateDirIfNeed('bin');
     FileSys.CreateDirIfNeed('bin/CyberDash1');
     FileSys.CreateDirIfNeed('bin/CyberDash2D');
     FileSys.CreateDirIfNeed('bin/CyberDashNC');
+    app.setAppUserModelId("CyberDash Launcher");
     mainWindow.loadFile("index.html");
 };
 
-app.whenReady().then(() => {
+let tray = null;
+app.whenReady().then(async () => {
     createWindow();
+
+    // tray = new Tray('assets/CyberDash.ico')
+    // const contentMenu = Menu.buildFromTemplate([
+    //     { label: 'Bombard You With Ads', type: "checkbox", checked: true },
+    //     { label: 'Start On Boot', type: "checkbox", checked: true },
+    //     { label: 'Close', click: () => {
+    //         app.exit();
+    //     } }
+    // ]);
+    // tray.setContextMenu(contentMenu);
+
+    // tray.on('click', () => {
+    //     mainWindow.show();
+    // })
+
+    // mainWindow.on('close', function(event) {
+    //     event.preventDefault();
+    //     mainWindow.hide();
+    // });
+
+    // let mins = getRndInteger(1, 2);
+    // await sleep(mins * 500, function() {
+    //     showNotification(mins);
+    // });
 });
 
 let gameDownloader = null;
@@ -49,3 +79,25 @@ ipcMain.handle('get/game', (event, gameInfo) => {
 ipcMain.handle('show/message_dialog', async (event, options) => {
     return await dialog.showMessageBox(mainWindow, options);
 });
+
+function showNotification(mins) {
+    let notification = new Notification({
+        title: "PLAY CYBERDASH",
+        body: `It has been ${mins} mins since you last played Cyberdash`,
+        icon: "assets/CyberDash.ico"
+    });
+
+    notification.on('click', () => {
+        mainWindow.show();
+    });
+
+    notification.show();
+}
+
+function getRndInteger(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) ) + min;
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}

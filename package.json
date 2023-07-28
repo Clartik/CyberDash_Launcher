@@ -1,11 +1,11 @@
 {
   "name": "cyberdash_launcher",
-  "productName": "CyberDash Launcher",
-  "version": "0.1.0",
-  "description": "A Launcher for CyberDash Games",
+  "version": "1.0.0",
+  "description": "A Gateway to CyberDashing",
   "main": "index.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-builder"
   },
   "repository": {
     "type": "git",
@@ -18,12 +18,31 @@
   },
   "homepage": "https://github.com/Clartik/CyberDash_Launcher#readme",
   "devDependencies": {
-    "electron": "^25.3.1"
+    "electron": "^25.3.1",
+    "electron-builder": "^24.6.3"
   },
   "dependencies": {
     "adm-zip": "^0.5.10",
     "basic-ftp": "^5.0.3",
     "ip": "^1.1.8",
     "ssh2-sftp-client": "^9.1.0"
+  },
+  "build": {
+    "appId": "com.karmah.CyberDashLauncher",
+    "productName": "CyberDash Launcher",
+    "directories": {
+      "output": "out"
+    },
+    "win": {
+      "icon": "assets/CyberDash.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "assets/CyberDash.ico",
+      "uninstallerIcon": "assets/CyberDash.ico",
+      "license": "eula.txt"
+    }
   }
 }
