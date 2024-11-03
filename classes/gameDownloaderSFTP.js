@@ -44,10 +44,10 @@ const sftp_local_config = {
 };
 
 const sftp_remote_config = {
-    host: '75.83.86.250',
+    host: '00.00.00.000',
     port: '22',
-    user: 'clartik',
-    password: '4509',
+    user: 'user',
+    password: '0000',
     readyTimeout: 10000,
     retries: 0,
 };

@@ -126,7 +126,6 @@ function setPlayButton(enable) {
         break;
     }
 
-
     if (enable) {
         if (playButton.classList.contains('animGrow')) return;
 
