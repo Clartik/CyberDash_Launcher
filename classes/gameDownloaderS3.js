@@ -131,7 +131,7 @@ class GameDownloader {
             const versionString = onlineVersion.ToString();
             // Construct dynamic zip path based on version
             // e.g., files/CyberDash1/1.0.1/Build.zip
-            const remoteZipKey = `${this.s3Path}/${versionString}/Build.zip`;
+            const remoteZipKey = `${this.s3Path}/Build.zip`;
             log.info(`Downloading game zip from ${remoteZipKey}`);
 
             // Get sizes
