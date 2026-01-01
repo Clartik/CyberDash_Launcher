@@ -52,7 +52,6 @@
     },
     "nsis": {
       "oneClick": false,
-      "perMachine": false,
       "allowToChangeInstallationDirectory": true,
       "installerIcon": "assets/CyberDash.ico",
       "uninstallerIcon": "assets/CyberDash.ico",
