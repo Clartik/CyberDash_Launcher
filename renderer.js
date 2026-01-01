@@ -65,7 +65,7 @@ async function sidebarToViewport(sidebarType, sidebarLabel, childDiv) {
         childDiv.classList.remove('hide');
         sidebarAnimating = false;
         sidebarType.removeEventListener('transitionend', eventHandle);
-        await CheckForUpdates(sidebarType);
+        // await CheckForUpdates(sidebarType);
     });
 }
 
@@ -108,12 +108,12 @@ async function CheckForUpdates(sidebarType) {
 document.addEventListener('DOMContentLoaded', async() => {
     const sidebars = document.getElementsByClassName('sidebar');
 
-    for (let sidebar of sidebars) {
-        if (!sidebar.classList.contains('open')) continue;
+    // for (let sidebar of sidebars) {
+    //     if (!sidebar.classList.contains('open')) continue;
 
-        await CheckForUpdates(sidebar);
-        break;
-    }
+    //     await CheckForUpdates(sidebar);
+    //     break;
+    // }
 });
 
 function setPlayButton(enable) {
@@ -173,7 +173,7 @@ function getGameNameFromSidebarID(sidebarType) {
         case 'original':
             return {
                 'dir': 'CyberDash1', 
-                'filename': 'Flashy Time CyberDash.exe'
+                'filename': 'Fla shy Time CyberDash.exe'
             };
         case 'twod':
             return {
