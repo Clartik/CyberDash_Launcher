@@ -1,14 +1,12 @@
 const { app, BrowserWindow, ipcMain, shell, dialog, Menu, Tray, Notification } = require('electron');
 const path = require('path');
 
-const GameDownloader = require('./classes/gameDownloaderSFTP');
+const GameDownloader = require('./classes/gameDownloaderS3');
 const FileSys = require('./classes/niceFileSystem');
 
-const AppUpdater = require('./updater');
+const setupUpdater = require('./updater');
 
 let mainWindow;
-
-const updater = AppUpdater();
 
 // app.setLoginItemSettings({
 //     openAtLogin: true
@@ -38,6 +36,8 @@ const createWindow = () => {
 let tray = null;
 app.whenReady().then(async () => {
     createWindow();
+
+    setupUpdater();
 
     // tray = new Tray('assets/CyberDash.ico')
     // const contentMenu = Menu.buildFromTemplate([
