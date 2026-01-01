@@ -46,6 +46,7 @@ body {
     font-size: 3.5vw;
     -webkit-text-stroke: 0.05em black;
     background-color: transparent;
+    /* color: #5c76e9; */
 }
 
 .animGrow {
@@ -135,6 +136,8 @@ body {
     padding-bottom: 1vh;
     opacity: 1;
     transition: all 1s;
+
+    margin-top: 5px;
 }
 
 .hide {
@@ -157,4 +160,22 @@ body {
 body {
     display: flex;
     flex-direction: row;
+}
+
+#original-font {
+    font-family: Flynn;
+
+    font-size: 3.25vw;
+}
+
+#twod-font {
+    font-family: Pixel;
+
+    font-size: 2.8vw;
+}
+
+#new-calamities-font {
+    font-family: Cyberfall;
+
+    font-size: 2.8vw;
 }
