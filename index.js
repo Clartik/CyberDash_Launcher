@@ -2,13 +2,17 @@ const { app, BrowserWindow, ipcMain, shell, dialog, Menu, Tray, Notification } =
 const path = require('path');
 
 const GameDownloader = require('./classes/gameDownloaderSFTP');
-const FileSys = require('./classes/niceFileSystem')
+const FileSys = require('./classes/niceFileSystem');
+
+const AppUpdater = require('./updater');
 
 let mainWindow;
 
-app.setLoginItemSettings({
-    openAtLogin: true
-})
+const updater = AppUpdater();
+
+// app.setLoginItemSettings({
+//     openAtLogin: true
+// })
 
 const createWindow = () => {
     mainWindow = new BrowserWindow({
@@ -26,6 +30,7 @@ const createWindow = () => {
     FileSys.CreateDirIfNeed('bin/CyberDash1');
     FileSys.CreateDirIfNeed('bin/CyberDash2D');
     FileSys.CreateDirIfNeed('bin/CyberDashNC');
+    
     app.setAppUserModelId("CyberDash Launcher");
     mainWindow.loadFile("index.html");
 };

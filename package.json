@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Clartik/CyberDash_Launcher.git"
+    "url": "https://github.com/Clartik/CyberDash_Launcher.git"
   },
   "author": "KarMah Inc.",
   "license": "MIT",
@@ -24,17 +24,29 @@
   "dependencies": {
     "adm-zip": "^0.5.10",
     "basic-ftp": "^5.0.3",
+    "electron-log": "^5.4.3",
+    "electron-updater": "^6.6.2",
     "ip": "^1.1.8",
     "ssh2-sftp-client": "^9.1.0"
   },
   "build": {
+    "extraMetadata": {
+      "productName": "CyberDash Launcher"
+    },
     "appId": "com.karmah.CyberDashLauncher",
     "productName": "CyberDash Launcher",
     "directories": {
-      "output": "out"
+      "output": "dist/v${version}"
     },
     "win": {
-      "icon": "assets/CyberDash.ico"
+      "artifactName": "CyberDash-Launcher-Setup.${exe}",
+      "icon": "assets/CyberDash.ico",
+      "publish": [
+        {
+          "provider": "s3",
+          "bucket": "cyberdash-downloads"
+        }
+      ]
     },
     "nsis": {
       "oneClick": false,
