@@ -3,6 +3,7 @@ const AdmZip = require('adm-zip');
 const fs = require('fs');
 const path = require('path');
 const FileSys = require('./niceFileSystem');
+const log = require('electron-log');
 
 // Configuration
 const BUCKET_NAME = "cyberdash-downloads"; 
@@ -48,6 +49,8 @@ class GameDownloader {
         this.localZipPath = `bin/${this.gameDir}/Build.zip`;
         this.s3Path = gameInfo['s3-path'];
         
+        log.info(`Initializing GameDownloader for ${this.gameDir} (S3 Path: ${this.s3Path})`);
+
         // S3 Keys
         // Version file is always at fixed path to check for updates
         this.remoteVersionKey = `${this.s3Path}/Version.txt`;
@@ -57,6 +60,7 @@ class GameDownloader {
     }
 
     async GetLatestGameVersion() {
+        log.info(`Checking for updates...`);
         this.webContents.send('send/download_state', 'Checking For Updates');
 
         // Always try to get online version first to know the download path
@@ -64,17 +68,23 @@ class GameDownloader {
 
         if (FileSys.CheckIfFileExists(this.localVersionPath)) {
             let localVersion = new Version(FileSys.ReadFileContents(this.localVersionPath));
+            log.info(`Local version: ${localVersion.ToString()}`);
     
             try {
                 if (onlineVersion == null) {
+                    log.error('Could not connect to update server.');
                     throw "Could Not Connect";
                 }
+                log.info(`Online version: ${onlineVersion.ToString()}`);
     
                 if (!localVersion.IsLatestVersion(onlineVersion)) {
+                    log.info('New version available. Starting update.');
                     this.installGames = await this.InstallGameFiles(onlineVersion);
                 }
                 else {
+                    log.info('Game is up to date.');
                     if (!FileSys.CheckIfFileExists(this.gamePath)) {
+                        log.warn('Game executable missing. Re-installing...');
                         FileSys.RemoveFilesInDir(`bin/${this.gameDir}`)
                         return;
                     }
@@ -82,16 +92,17 @@ class GameDownloader {
                     this.webContents.send('send/download_state', 'Launch Game');
                 }
             } catch (error) {
-                console.log(error);
+                log.error('Error in GetLatestGameVersion:', error);
                 this.webContents.send('send/download_state', 'Offline - Launch Game');
                 return true;
             }
         }
         else {
             if (onlineVersion) {
+                log.info('No local version. Installing...');
                 this.installGames = await this.InstallGameFiles(onlineVersion);
             } else {
-                console.log("Could Not Connect");
+                log.error('Could not connect and no local version.');
                 this.webContents.send('send/download_state', 'Offline - Failed To Check');
             }
         }
@@ -99,13 +110,14 @@ class GameDownloader {
     
     async DownloadLatestVersion() {
         try {
+            log.info(`Downloading version file from ${this.remoteVersionKey}`);
             await this.downloadFile(this.remoteVersionKey, this.localVersionRemotePath);
             var version = new Version(FileSys.ReadFileContents(this.localVersionRemotePath));
     
             FileSys.DeleteFile(this.localVersionRemotePath);
         }
         catch(err) {
-            console.log(err);
+            log.error('Error downloading version file:', err);
             return null;
         }
     
@@ -120,11 +132,14 @@ class GameDownloader {
             // Construct dynamic zip path based on version
             // e.g., files/CyberDash1/1.0.1/Build.zip
             const remoteZipKey = `${this.s3Path}/${versionString}/Build.zip`;
+            log.info(`Downloading game zip from ${remoteZipKey}`);
 
             // Get sizes
             const zipSize = await this.getFileSize(remoteZipKey);
             const versionSize = await this.getFileSize(this.remoteVersionKey);
             const totalSize = zipSize + versionSize;
+            
+            log.info(`Total download size: ${FileSys.FormatBytes(totalSize)}`);
 
             let downloadedBytes = 0;
 
@@ -139,33 +154,36 @@ class GameDownloader {
             
             // Download Version (after zip, so total progress is consistent)
             await this.downloadFile(this.remoteVersionKey, this.localVersionPath, onProgress);
+            log.info('Download complete.');
 
         }
         catch (err) {
-            console.log(err);
+            log.error('Download failed:', err);
             this.webContents.send('send/download_state', 'Download Failed');
             return false;
         }
     
         // INSTALL
         this.webContents.send('send/download_state', 'Installing Game');
+        log.info('Extracting files...');
     
         try {
             const zip = new AdmZip(this.localZipPath);
             await zip.extractAllToAsync(`bin/${this.gameDir}/`, true, false, (error) => {
                 if (error) {
-                    console.log(error);
+                    log.error('Extraction error:', error);
                     this.webContents.send('send/download_state', 'Failed To Install');
                     return false;
                 }
             });
         } catch (e) {
-            console.log(e);
+            log.error('Exception during extraction:', e);
             this.webContents.send('send/download_state', 'Failed To Install');
             return false;
         }
     
         FileSys.DeleteFile(this.localZipPath);
+        log.info('Installation successful.');
 
         this.webContents.send('send/download_state', 'Launch Game');
         return true;
