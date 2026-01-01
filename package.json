@@ -51,8 +51,7 @@
       ]
     },
     "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
+      "oneClick": true,
       "installerIcon": "assets/CyberDash.ico",
       "uninstallerIcon": "assets/CyberDash.ico",
       "license": "eula.txt"
