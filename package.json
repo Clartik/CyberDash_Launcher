@@ -40,7 +40,7 @@
       "output": "dist/v${version}"
     },
     "win": {
-      "artifactName": "CyberDash-Launcher-Setup.${exe}",
+      "artifactName": "CyberDash-Launcher-Setup.${ext}",
       "icon": "assets/CyberDash.ico",
       "publish": [
         {
