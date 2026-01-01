@@ -5,6 +5,9 @@ function setupUpdater() {
     log.transports.file.level = "debug";
     autoUpdater.logger = log;
 
+    autoUpdater.autoInstallOnAppQuit = false;
+    autoUpdater.allowDowngrade = true;
+
     autoUpdater.checkForUpdatesAndNotify();
 }
 
