@@ -1,5 +1,43 @@
 End User License Agreement
 
-Copyright (c) 2023 KarMah Inc.
+Copyright (c) 2025 KarMah Inc.
+
+By downloading, installing, launching, staring at, or thinking too hard about this application (“CyberDash Launcher”), you agree to the following terms, whether you read them or not (you did not).
 
 By agreeing to this EULA, KarMah Inc. is legally allowed to bombard you with constant ads for CyberDash related products.
+
+1. Totally Normal Usage
+
+You are granted a non-exclusive, non-transferable, non-reversible, and mostly imaginary license to use CyberDash for purposes known and unknown, including but not limited to clicking buttons and wondering why something doesn’t work.
+
+2. Personal Information (Definitely Safe™)
+
+CyberDash may collect personal information including your name, email, favorite color, sleep schedule, and the name of your first pet (for absolutely no reason). Any resemblance to identity theft is purely coincidental.
+
+3. Cryptocurrency Activities
+
+While running, CyberDash may briefly, occasionally, or constantly mine cryptocurrency using your CPU, GPU, or sheer willpower. This is considered a “feature” and not a bug.
+
+4. Additional Software
+
+CyberDash may install additional software, including but not limited to:
+
+Extra background processes
+
+Mystery files
+
+Programs that pretend not to exist
+
+Hypothetical viruses that are definitely hypothetical
+
+5. Performance Expectations
+
+CyberDash makes no guarantees regarding performance, stability, battery life, fan noise, system temperature, or your overall happiness.
+
+6. Liability
+
+KarMah Inc. is not responsible for lost data, lost time, lost patience, lost friendships, or lost laptops. If something breaks, that’s between you and your computer.
+
+7. Acceptance
+
+If you do not agree to these terms, please uninstall the application immediately. If you continue using the application, we will assume you agree and didn’t read any of this.
