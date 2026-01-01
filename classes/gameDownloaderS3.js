@@ -8,7 +8,6 @@ const FileSys = require('./niceFileSystem');
 const BUCKET_NAME = "cyberdash-downloads"; 
 const REGION = "us-west-1"; 
 const BASE_URL = `https://${BUCKET_NAME}.s3.${REGION}.amazonaws.com`;
-const KEY_PREFIX = ""; 
 
 class Version {
     constructor(version) {
@@ -47,11 +46,11 @@ class GameDownloader {
         this.localVersionPath = `bin/${this.gameDir}/Version.txt`;
         this.localVersionRemotePath = `bin/${this.gameDir}/Version_Remote.txt`;
         this.localZipPath = `bin/${this.gameDir}/Build.zip`;
+        this.s3Path = gameInfo['s3-path'];
         
         // S3 Keys
-        // Assuming structure: bucket/gameDir/Build.zip
-        this.remoteZipKey = `${KEY_PREFIX}${this.gameDir}/Build.zip`;
-        this.remoteVersionKey = `${KEY_PREFIX}${this.gameDir}/Version.txt`;
+        // Version file is always at fixed path to check for updates
+        this.remoteVersionKey = `${this.s3Path}/Version.txt`;
         
         this.gamePath = `bin/${this.gameDir}/Build/${this.gameFile}`;
         this.webContents = webContents;
@@ -60,18 +59,19 @@ class GameDownloader {
     async GetLatestGameVersion() {
         this.webContents.send('send/download_state', 'Checking For Updates');
 
+        // Always try to get online version first to know the download path
+        let onlineVersion = await this.DownloadLatestVersion();
+
         if (FileSys.CheckIfFileExists(this.localVersionPath)) {
             let localVersion = new Version(FileSys.ReadFileContents(this.localVersionPath));
     
             try {
-                let onlineVersion = await this.DownloadLatestVersion();
-
                 if (onlineVersion == null) {
                     throw "Could Not Connect";
                 }
     
                 if (!localVersion.IsLatestVersion(onlineVersion)) {
-                    this.installGames = await this.InstallGameFiles();
+                    this.installGames = await this.InstallGameFiles(onlineVersion);
                 }
                 else {
                     if (!FileSys.CheckIfFileExists(this.gamePath)) {
@@ -88,7 +88,12 @@ class GameDownloader {
             }
         }
         else {
-            this.installGames = await this.InstallGameFiles();
+            if (onlineVersion) {
+                this.installGames = await this.InstallGameFiles(onlineVersion);
+            } else {
+                console.log("Could Not Connect");
+                this.webContents.send('send/download_state', 'Offline - Failed To Check');
+            }
         }
     }
     
@@ -107,12 +112,17 @@ class GameDownloader {
         return version;
     }
     
-    async InstallGameFiles() {
+    async InstallGameFiles(onlineVersion) {
         try {    
             this.webContents.send('send/download_state', 'Downloading Game');
 
+            const versionString = onlineVersion.ToString();
+            // Construct dynamic zip path based on version
+            // e.g., files/CyberDash1/1.0.1/Build.zip
+            const remoteZipKey = `${this.s3Path}/${versionString}/Build.zip`;
+
             // Get sizes
-            const zipSize = await this.getFileSize(this.remoteZipKey);
+            const zipSize = await this.getFileSize(remoteZipKey);
             const versionSize = await this.getFileSize(this.remoteVersionKey);
             const totalSize = zipSize + versionSize;
 
@@ -121,12 +131,11 @@ class GameDownloader {
             // Helper to track progress
             const onProgress = (bytes) => {
                 downloadedBytes += bytes;
-                // Avoid sending too many updates? renderer logic seems to handle text updates
                 this.webContents.send('send/download_state', `Downloading ${FileSys.FormatBytes(downloadedBytes)}/${FileSys.FormatBytes(totalSize)}`);
             };
 
             // Download Zip
-            await this.downloadFile(this.remoteZipKey, this.localZipPath, onProgress);
+            await this.downloadFile(remoteZipKey, this.localZipPath, onProgress);
             
             // Download Version (after zip, so total progress is consistent)
             await this.downloadFile(this.remoteVersionKey, this.localVersionPath, onProgress);
